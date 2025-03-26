@@ -1,4 +1,4 @@
-package at.aau.serg.websocketdemoserver;
+package at.aau.serg.websocketdemoserver.dkt;
 
 public class GameMessage {
     private String type;
@@ -15,12 +15,12 @@ public class GameMessage {
         return type;
     }
 
-    public String getPayload() {
-        return payload;
-    }
-
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getPayload() {
+        return payload;
     }
 
     public void setPayload(String payload) {
