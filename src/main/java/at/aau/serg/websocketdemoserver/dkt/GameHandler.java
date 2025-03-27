@@ -1,11 +1,9 @@
 package at.aau.serg.websocketdemoserver.dkt;
 
+
 import java.util.Random;
 
 public class GameHandler {
-
-    public GameHandler() {
-    }
 
     public GameMessage handle(GameMessage msg) {
         switch (msg.getType()) {
