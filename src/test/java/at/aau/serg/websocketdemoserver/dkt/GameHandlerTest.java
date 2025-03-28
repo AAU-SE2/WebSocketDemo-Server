@@ -92,6 +92,16 @@ public class GameHandlerTest {
         assertEquals("pay_tax", msg.getType());
     }
 
+    @Test
+    void testDecideActionForEvent() {
+        GameHandler handler = new GameHandler();
+        Tile tile = new Tile(2, "Ereignisfeld", "event");
+
+        GameMessage msg = handler.decideAction("player1", tile);
+        assertEquals("draw_event_card", msg.getType());
+    }
+
+
 
 
 }
