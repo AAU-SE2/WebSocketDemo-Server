@@ -1,12 +1,21 @@
 package at.aau.serg.websocketdemoserver.dkt;
 
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class GameHandler {
 
     private final GameState gameState = new GameState();
     private final GameBoard board = new GameBoard();
+    private final List<GameMessage> extraMessages = new ArrayList<>();
+
+    public List<GameMessage> getExtraMessages() {
+        return extraMessages;
+    }
+
 
     public GameState getGameState() {
         return gameState;
