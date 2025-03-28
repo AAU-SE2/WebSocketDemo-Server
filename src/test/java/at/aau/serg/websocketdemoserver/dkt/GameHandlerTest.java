@@ -83,5 +83,15 @@ public class GameHandlerTest {
         assertEquals("can_buy_property", msg.getType());
     }
 
+    @Test
+    void testDecideActionForTax() {
+        GameHandler handler = new GameHandler();
+        Tile tile = new Tile(4, "Einkommenssteuer", "tax");
+
+        GameMessage msg = handler.decideAction("player1", tile);
+        assertEquals("pay_tax", msg.getType());
+    }
+
+
 
 }
