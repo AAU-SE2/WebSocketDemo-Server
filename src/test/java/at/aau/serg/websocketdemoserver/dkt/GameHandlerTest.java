@@ -34,6 +34,24 @@ public class GameHandlerTest {
         assertTrue(obj.has("tileType"), "tileType fehlt im Payload");
     }
 
+    @Test
+    void testTileTypeIsValid() throws JSONException {
+        GameHandler handler = new GameHandler();
+        String payload = "{\"playerId\":\"test\"}";
+        GameMessage result = handler.handle(new GameMessage("roll_dice", payload));
+
+        JSONObject obj = new JSONObject(result.getPayload());
+        String type = obj.getString("tileType");
+
+        // Anpassen der erlaubten Typen
+        assertTrue(
+                type.matches("start|street|station|event|tax|jail|goto_jail|free"),
+                "tileType ist kein gültiger Typ: " + type
+        );
+    }
+
+
+
 
 
 
