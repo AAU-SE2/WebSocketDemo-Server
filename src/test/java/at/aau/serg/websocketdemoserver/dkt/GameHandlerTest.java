@@ -74,9 +74,4 @@ public class GameHandlerTest {
         assertTrue(pos >= 0 && pos < 40);
     }
 
-
-
-
-
-
 }

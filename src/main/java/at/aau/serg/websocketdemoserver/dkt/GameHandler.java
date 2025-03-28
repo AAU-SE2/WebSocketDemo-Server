@@ -49,4 +49,26 @@ public class GameHandler {
             return new GameMessage("error", "Fehler: " + e.getMessage());
         }
     }
+
+    private GameMessage decideAction(String playerId, Tile tile) {
+        JSONObject payload = new JSONObject();
+        payload.put("playerId", playerId);
+        payload.put("tilePos", tile.getPosition());
+        payload.put("tileName", tile.getName());
+
+        switch (tile.getType()) {
+            case "street":
+            case "station":
+                return new GameMessage("can_buy_property", payload.toString());
+            case "tax":
+                return new GameMessage("pay_tax", payload.toString());
+            case "event":
+                return new GameMessage("draw_event_card", payload.toString());
+            case "goto_jail":
+                return new GameMessage("go_to_jail", payload.toString());
+            default:
+                return new GameMessage("noop", payload.toString()); // Keine Aktion nötig
+        }
+    }
+
 }
