@@ -127,4 +127,19 @@ public class GameHandlerTest {
                 "Unerwarteter Aktionstyp: " + action.getType());
     }
 
+    @Test
+    void testBuyPropertyStoresOwnership() throws JSONException {
+        GameHandler handler = new GameHandler();
+
+        // Spieler "player1" kauft Feld Nr. 5
+        JSONObject payload = new JSONObject();
+        payload.put("playerId", "player1");
+        payload.put("tilePos", 5);
+
+        GameMessage result = handler.handle(new GameMessage("buy_property", payload.toString()));
+
+        assertEquals("property_bought", result.getType());
+        assertEquals("player1", handler.getOwner(5), "Feld 5 sollte nun player1 gehören");
+    }
+
 }
