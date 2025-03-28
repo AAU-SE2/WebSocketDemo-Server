@@ -127,6 +127,21 @@ public class GameHandlerTest {
                 "Unerwarteter Aktionstyp: " + action.getType());
     }
 
+    @Test
+    void testCanBuyPropertyActionAfterRoll() {
+        GameHandler handler = new GameHandler();
+
+        // Wir manipulieren gezielt die Position auf ein "street"-Feld
+        handler.getGameState().updatePosition("player1", 0); // Position 0 + dice = 1 = Museumsplatz (street)
+
+        String payload = "{\"playerId\":\"player1\"}";
+        handler.handle(new GameMessage("roll_dice", payload));
+        GameMessage action = handler.getExtraMessages().get(0);
+
+        assertEquals("can_buy_property", action.getType());
+    }
+
+
 
 
 
