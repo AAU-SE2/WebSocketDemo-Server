@@ -51,17 +51,21 @@ public class GameHandler {
 
             System.out.println("Server: " + playerId + " ist auf " + tile.getName() + " (" + tile.getType() + ")");
 
-            // Aktion ermitteln (z.B.: kaufen, zahlen etc.)
+            // Aktion ermitteln
             GameMessage actionMsg = decideAction(playerId, tile);
-            System.out.println("→ Aktion: " + actionMsg.getType());
 
-            // Nur player_moved senden (später: beide Nachrichten)
+            // Aktion zur Extraschlange hinzufügen
+            extraMessages.clear();
+            extraMessages.add(actionMsg);
+
+            // movement als Rückgabe (wird direkt vom Controller verschickt)
             return new GameMessage("player_moved", movePayload.toString());
 
         } catch (Exception e) {
             return new GameMessage("error", "Fehler: " + e.getMessage());
         }
     }
+
 
 
     GameMessage decideAction(String playerId, Tile tile) {

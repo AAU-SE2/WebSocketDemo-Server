@@ -10,14 +10,12 @@ import java.util.List;
 
 @Controller
 public class GameWebSocketController {
-    private final GameHandler gameHandler = new GameHandler();
-
     private final SimpMessagingTemplate messagingTemplate;
+    private final GameHandler gameHandler = new GameHandler();
 
     public GameWebSocketController(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
     }
-
 
     @MessageMapping("/dkt")
     @SendTo("/topic/dkt")
@@ -26,14 +24,12 @@ public class GameWebSocketController {
 
         GameMessage result = gameHandler.handle(message);
 
-        // Nebenwirkung: weitere Nachrichten aus Queue senden
-        List<GameMessage> extras = gameHandler.getExtraMessages();
-        for (GameMessage extra : extras) {
+        for (GameMessage extra : gameHandler.getExtraMessages()) {
             System.out.println("→ Extra: " + extra.getType());
             messagingTemplate.convertAndSend("/topic/dkt", extra);
         }
 
-        return result; // erste Nachricht geht direkt an Sender
+        return result;
     }
 
 }
