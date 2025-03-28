@@ -60,7 +60,19 @@ public class GameHandlerTest {
         assertTrue(pos >= 0 && pos < 40, "Position liegt nicht im gültigen Bereich");
     }
 
+    @Test
+    void testMultipleRollsNoCrash() {
+        GameHandler handler = new GameHandler();
 
+        for (int i = 0; i < 10; i++) {
+            String payload = "{\"playerId\":\"multi\"}";
+            GameMessage result = handler.handle(new GameMessage("roll_dice", payload));
+            assertEquals("player_moved", result.getType());
+        }
+
+        int pos = handler.getGameState().getPosition("multi");
+        assertTrue(pos >= 0 && pos < 40);
+    }
 
 
 
