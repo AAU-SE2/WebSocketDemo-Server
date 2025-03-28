@@ -101,6 +101,16 @@ public class GameHandlerTest {
         assertEquals("draw_event_card", msg.getType());
     }
 
+    @Test
+    void testDecideActionForFreeField() {
+        GameHandler handler = new GameHandler();
+        Tile tile = new Tile(20, "Frei Parken", "free");
+
+        GameMessage msg = handler.decideAction("player1", tile);
+        assertEquals("skipped", msg.getType());
+    }
+
+
 
 
 
