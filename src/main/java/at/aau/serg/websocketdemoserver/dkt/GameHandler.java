@@ -29,26 +29,31 @@ public class GameHandler {
             int dice = new Random().nextInt(6) + 1;
             int currentPos = gameState.getPosition(playerId);
             int newPos = (currentPos + dice) % 40;
-            Tile tile = board.getTileAt(newPos);
-
-
             gameState.updatePosition(playerId, newPos);
 
-            JSONObject result = new JSONObject();
-            result.put("playerId", playerId);
-            result.put("pos", newPos);
-            result.put("dice", dice);
-            result.put("tileName", tile.getName());
-            result.put("tileType", tile.getType());
+            Tile tile = board.getTileAt(newPos);
 
-            System.out.println("Server: " + playerId + " moved to " + newPos + " (rolled " + dice + ", field: " + tile.getName() + ")");
+            JSONObject movePayload = new JSONObject();
+            movePayload.put("playerId", playerId);
+            movePayload.put("pos", newPos);
+            movePayload.put("dice", dice);
+            movePayload.put("tileName", tile.getName());
+            movePayload.put("tileType", tile.getType());
 
-            return new GameMessage("player_moved", result.toString());
+            System.out.println("Server: " + playerId + " ist auf " + tile.getName() + " (" + tile.getType() + ")");
+
+            // Aktion ermitteln (z. B. kaufen, zahlen etc.)
+            GameMessage actionMsg = decideAction(playerId, tile);
+            System.out.println("→ Aktion: " + actionMsg.getType());
+
+            // Nur player_moved senden (später: beide Nachrichten)
+            return new GameMessage("player_moved", movePayload.toString());
 
         } catch (Exception e) {
             return new GameMessage("error", "Fehler: " + e.getMessage());
         }
     }
+
 
     private GameMessage decideAction(String playerId, Tile tile) {
         JSONObject payload = new JSONObject();
