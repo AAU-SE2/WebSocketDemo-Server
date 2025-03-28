@@ -20,6 +20,20 @@ public class GameHandlerTest {
         assertTrue(result.getPayload().contains("pos"));
     }
 
+    @Test
+    void testPlayerMovedIncludesTileData() throws JSONException {
+        GameHandler handler = new GameHandler();
+        String payload = "{\"playerId\":\"player1\"}";
+
+        GameMessage result = handler.handle(new GameMessage("roll_dice", payload));
+
+        assertEquals("player_moved", result.getType());
+
+        JSONObject obj = new JSONObject(result.getPayload());
+        assertTrue(obj.has("tileName"), "tileName fehlt im Payload");
+        assertTrue(obj.has("tileType"), "tileType fehlt im Payload");
+    }
+
 
 
 
