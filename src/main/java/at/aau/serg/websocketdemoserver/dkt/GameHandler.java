@@ -8,6 +8,9 @@ public class GameHandler {
     private final GameState gameState = new GameState();
     private final GameBoard board = new GameBoard();
 
+    public GameState getGameState() {
+        return gameState;
+    }
 
     public GameMessage handle(GameMessage msg) {
         switch (msg.getType()) {

@@ -1,7 +1,9 @@
 package at.aau.serg.websocketdemoserver.dkt;
 
+import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.json.JSONObject;
 
 public class GameHandlerTest {
     @Test
@@ -17,4 +19,9 @@ public class GameHandlerTest {
         assertTrue(result.getPayload().contains("player1"));
         assertTrue(result.getPayload().contains("pos"));
     }
+
+
+
+
+
 }
