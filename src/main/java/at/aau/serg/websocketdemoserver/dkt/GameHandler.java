@@ -2,29 +2,33 @@ package at.aau.serg.websocketdemoserver.dkt;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class GameHandler {
 
     private final GameState gameState = new GameState();
     private final GameBoard board = new GameBoard();
     private final List<GameMessage> extraMessages = new ArrayList<>();
+    private final Map<Integer, String> ownership = new HashMap<>(); // Besitzverwaltung
 
     public List<GameMessage> getExtraMessages() {
         return extraMessages;
     }
 
-
     public GameState getGameState() {
         return gameState;
+    }
+
+    public String getOwner(int tilePos) {
+        return ownership.get(tilePos);
     }
 
     public GameMessage handle(GameMessage msg) {
         switch (msg.getType()) {
             case "roll_dice":
                 return handleRollDice(msg.getPayload());
+            case "buy_property":
+                return handleBuyProperty(msg.getPayload());
             default:
                 return new GameMessage("error", "Unbekannter Typ: " + msg.getType());
         }
@@ -58,7 +62,6 @@ public class GameHandler {
             extraMessages.clear();
             extraMessages.add(actionMsg);
 
-            // movement als Rückgabe (wird direkt vom Controller verschickt)
             return new GameMessage("player_moved", movePayload.toString());
 
         } catch (Exception e) {
@@ -66,7 +69,29 @@ public class GameHandler {
         }
     }
 
+    private GameMessage handleBuyProperty(String payload) {
+        try {
+            JSONObject obj = new JSONObject(payload);
+            String playerId = obj.getString("playerId");
+            int tilePos = obj.getInt("tilePos");
 
+            if (ownership.containsKey(tilePos)) {
+                return new GameMessage("error", "Feld gehört schon jemandem!");
+            }
+
+            ownership.put(tilePos, playerId);
+            System.out.println("Besitz gespeichert: " + playerId + " → Feld " + tilePos);
+
+            JSONObject response = new JSONObject();
+            response.put("playerId", playerId);
+            response.put("tilePos", tilePos);
+
+            return new GameMessage("property_bought", response.toString());
+
+        } catch (Exception e) {
+            return new GameMessage("error", "Fehler beim Kauf: " + e.getMessage());
+        }
+    }
 
     GameMessage decideAction(String playerId, Tile tile) {
         JSONObject payload = new JSONObject();
@@ -85,8 +110,7 @@ public class GameHandler {
             case "goto_jail":
                 return new GameMessage("go_to_jail", payload.toString());
             default:
-                return new GameMessage("skipped", payload.toString()); // Keine Aktion nötig
+                return new GameMessage("skipped", payload.toString());
         }
     }
-
 }
