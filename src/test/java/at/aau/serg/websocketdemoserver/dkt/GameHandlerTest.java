@@ -50,6 +50,17 @@ public class GameHandlerTest {
         );
     }
 
+    @Test
+    void testPlayerPositionIsStored() {
+        GameHandler handler = new GameHandler();
+        String payload = "{\"playerId\":\"p1\"}";
+        handler.handle(new GameMessage("roll_dice", payload));
+
+        int pos = handler.getGameState().getPosition("p1");
+        assertTrue(pos >= 0 && pos < 40, "Position liegt nicht im gültigen Bereich");
+    }
+
+
 
 
 
