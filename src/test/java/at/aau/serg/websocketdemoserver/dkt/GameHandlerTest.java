@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.json.JSONObject;
 
+import java.util.List;
+
 public class GameHandlerTest {
     @Test
     void testHandleRollDiceReturnsPlayerMoved() {
@@ -74,9 +76,70 @@ public class GameHandlerTest {
         assertTrue(pos >= 0 && pos < 40);
     }
 
+    @Test
+    void testDecideActionForStreet() {
+        GameHandler handler = new GameHandler();
+        Tile tile = new Tile(1, "Museumsplatz", "street");
 
+        GameMessage msg = handler.decideAction("player1", tile);
+        assertEquals("can_buy_property", msg.getType());
+    }
 
+    @Test
+    void testDecideActionForTax() {
+        GameHandler handler = new GameHandler();
+        Tile tile = new Tile(4, "Einkommenssteuer", "tax");
 
+        GameMessage msg = handler.decideAction("player1", tile);
+        assertEquals("pay_tax", msg.getType());
+    }
 
+    @Test
+    void testDecideActionForEvent() {
+        GameHandler handler = new GameHandler();
+        Tile tile = new Tile(2, "Ereignisfeld", "event");
+
+        GameMessage msg = handler.decideAction("player1", tile);
+        assertEquals("draw_event_card", msg.getType());
+    }
+
+    @Test
+    void testDecideActionForFreeField() {
+        GameHandler handler = new GameHandler();
+        Tile tile = new Tile(20, "Frei Parken", "free");
+
+        GameMessage msg = handler.decideAction("player1", tile);
+        assertEquals("skipped", msg.getType());
+    }
+
+    @Test
+    void testExtraActionGeneratedAfterRoll() {
+        GameHandler handler = new GameHandler();
+        String payload = "{\"playerId\":\"player1\"}";
+        handler.handle(new GameMessage("roll_dice", payload));
+
+        List<GameMessage> extras = handler.getExtraMessages();
+        assertEquals(1, extras.size(), "Es sollte genau eine Aktionsnachricht geben");
+
+        GameMessage action = extras.get(0);
+        assertNotNull(action.getType(), "Aktionstyp darf nicht null sein");
+        assertTrue(action.getType().matches("can_buy_property|pay_tax|draw_event_card|go_to_jail|skipped"),
+                "Unerwarteter Aktionstyp: " + action.getType());
+    }
+
+    @Test
+    void testBuyPropertyStoresOwnership() throws JSONException {
+        GameHandler handler = new GameHandler();
+
+        // Spieler "player1" kauft Feld Nr. 5
+        JSONObject payload = new JSONObject();
+        payload.put("playerId", "player1");
+        payload.put("tilePos", 5);
+
+        GameMessage result = handler.handle(new GameMessage("buy_property", payload.toString()));
+
+        assertEquals("property_bought", result.getType());
+        assertEquals("player1", handler.getOwner(5), "Feld 5 sollte nun player1 gehören");
+    }
 
 }
