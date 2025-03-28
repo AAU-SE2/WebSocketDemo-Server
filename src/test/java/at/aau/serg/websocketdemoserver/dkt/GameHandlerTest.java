@@ -141,6 +141,21 @@ public class GameHandlerTest {
         assertEquals("can_buy_property", action.getType());
     }
 
+    @Test
+    void testPayTaxActionAfterRoll() {
+        GameHandler handler = new GameHandler();
+
+        // Steuerfeld bei Pos 4
+        handler.getGameState().updatePosition("test", 3); // +1 Würfel → Pos 4
+
+        String payload = "{\"playerId\":\"test\"}";
+        handler.handle(new GameMessage("roll_dice", payload));
+        GameMessage action = handler.getExtraMessages().get(0);
+
+        assertEquals("pay_tax", action.getType());
+    }
+
+
 
 
 
