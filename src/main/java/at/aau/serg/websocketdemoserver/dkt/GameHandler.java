@@ -102,13 +102,22 @@ public class GameHandler {
         switch (tile.getType()) {
             case "street":
             case "station":
+                String owner = ownership.get(tile.getPosition());
+                if (owner != null && !owner.equals(playerId)) {
+                    payload.put("ownerId", owner);
+                    return new GameMessage("must_pay_rent", payload.toString());
+                }
                 return new GameMessage("can_buy_property", payload.toString());
+
             case "tax":
                 return new GameMessage("pay_tax", payload.toString());
+
             case "event":
                 return new GameMessage("draw_event_card", payload.toString());
+
             case "goto_jail":
                 return new GameMessage("go_to_jail", payload.toString());
+
             default:
                 return new GameMessage("skipped", payload.toString());
         }
