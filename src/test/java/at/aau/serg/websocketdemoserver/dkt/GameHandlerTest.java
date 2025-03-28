@@ -155,6 +155,21 @@ public class GameHandlerTest {
         assertEquals("pay_tax", action.getType());
     }
 
+    @Test
+    void testSkippedActionAfterFreeParking() {
+        GameHandler handler = new GameHandler();
+
+        // Frei Parken bei Pos 20
+        handler.getGameState().updatePosition("p1", 19); // +1 Würfel → Pos 20 (free)
+
+        String payload = "{\"playerId\":\"p1\"}";
+        handler.handle(new GameMessage("roll_dice", payload));
+        GameMessage action = handler.getExtraMessages().get(0);
+
+        assertEquals("skipped", action.getType());
+    }
+
+
 
 
 
