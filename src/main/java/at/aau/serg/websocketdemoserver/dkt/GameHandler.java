@@ -6,6 +6,8 @@ import java.util.Random;
 public class GameHandler {
 
     private final GameState gameState = new GameState();
+    private final GameBoard board = new GameBoard();
+
 
     public GameMessage handle(GameMessage msg) {
         switch (msg.getType()) {
@@ -24,6 +26,8 @@ public class GameHandler {
             int dice = new Random().nextInt(6) + 1;
             int currentPos = gameState.getPosition(playerId);
             int newPos = (currentPos + dice) % 40;
+            Tile tile = board.getTileAt(newPos);
+
 
             gameState.updatePosition(playerId, newPos);
 
@@ -31,8 +35,11 @@ public class GameHandler {
             result.put("playerId", playerId);
             result.put("pos", newPos);
             result.put("dice", dice);
+            result.put("tileName", tile.getName());
+            result.put("tileType", tile.getType());
 
-            System.out.println("Server: " + playerId + " moved to " + newPos + " (rolled " + dice + ")");
+            System.out.println("Server: " + playerId + " moved to " + newPos + " (rolled " + dice + ", field: " + tile.getName() + ")");
+
             return new GameMessage("player_moved", result.toString());
 
         } catch (Exception e) {
