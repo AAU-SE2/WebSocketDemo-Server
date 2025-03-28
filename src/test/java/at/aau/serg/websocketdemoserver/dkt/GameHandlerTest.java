@@ -74,4 +74,14 @@ public class GameHandlerTest {
         assertTrue(pos >= 0 && pos < 40);
     }
 
+    @Test
+    void testDecideActionForStreet() {
+        GameHandler handler = new GameHandler();
+        Tile tile = new Tile(1, "Museumsplatz", "street");
+
+        GameMessage msg = handler.decideAction("player1", tile);
+        assertEquals("can_buy_property", msg.getType());
+    }
+
+
 }

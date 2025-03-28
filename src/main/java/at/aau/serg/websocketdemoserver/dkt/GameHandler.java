@@ -42,7 +42,7 @@ public class GameHandler {
 
             System.out.println("Server: " + playerId + " ist auf " + tile.getName() + " (" + tile.getType() + ")");
 
-            // Aktion ermitteln (z. B. kaufen, zahlen etc.)
+            // Aktion ermitteln (z.B.: kaufen, zahlen etc.)
             GameMessage actionMsg = decideAction(playerId, tile);
             System.out.println("→ Aktion: " + actionMsg.getType());
 
@@ -55,7 +55,7 @@ public class GameHandler {
     }
 
 
-    private GameMessage decideAction(String playerId, Tile tile) {
+    GameMessage decideAction(String playerId, Tile tile) {
         JSONObject payload = new JSONObject();
         payload.put("playerId", playerId);
         payload.put("tilePos", tile.getPosition());
@@ -72,7 +72,7 @@ public class GameHandler {
             case "goto_jail":
                 return new GameMessage("go_to_jail", payload.toString());
             default:
-                return new GameMessage("noop", payload.toString()); // Keine Aktion nötig
+                return new GameMessage("skipped", payload.toString()); // Keine Aktion nötig
         }
     }
 
