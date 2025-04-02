@@ -44,7 +44,7 @@ public class GameHandlerTest {
         GameMessage result = handler.handle(new GameMessage("roll_dice", payload));
 
         JSONObject obj = new JSONObject(result.getPayload());
-        String type = obj.getString("tileType");
+        String type = obj.getString("tileType").toLowerCase();
 
         // Anpassen der erlaubten Typen
         assertTrue(
