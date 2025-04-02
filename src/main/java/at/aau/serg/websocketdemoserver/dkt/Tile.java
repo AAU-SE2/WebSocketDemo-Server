@@ -19,7 +19,7 @@ public class Tile {
     }
 
     public String getTileType() {
-        return this.getClass().getSimpleName();
+        return this.getClass().getSimpleName().toLowerCase();
     }
 
 }
