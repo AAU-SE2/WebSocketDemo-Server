@@ -51,9 +51,9 @@ public class GameHandler {
             movePayload.put("pos", newPos);
             movePayload.put("dice", dice);
             movePayload.put("tileName", tile.getName());
-            movePayload.put("tileType", tile.getType());
+            movePayload.put("tileType", tile.getTileType());
 
-            System.out.println("Server: " + playerId + " ist auf " + tile.getName() + " (" + tile.getType() + ")");
+            System.out.println("Server: " + playerId + " ist auf " + tile.getName() + " (" + tile.getTileType() + ")");
 
             // Aktion ermitteln
             GameMessage actionMsg = decideAction(playerId, tile);
@@ -99,7 +99,7 @@ public class GameHandler {
         payload.put("tilePos", tile.getPosition());
         payload.put("tileName", tile.getName());
 
-        switch (tile.getType()) {
+        switch (tile.getTileType()) {
             case "street":
             case "station":
                 String owner = ownership.get(tile.getPosition());

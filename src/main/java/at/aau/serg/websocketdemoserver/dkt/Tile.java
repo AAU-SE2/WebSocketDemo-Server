@@ -3,12 +3,11 @@ package at.aau.serg.websocketdemoserver.dkt;
 public class Tile {
     private final int position;
     private final String name;
-    private final String type;
 
-    public Tile(int position, String name, String type) {
+
+    public Tile(int position, String name) {
         this.position = position;
         this.name = name;
-        this.type = type;
     }
 
     public int getPosition() {
@@ -19,7 +18,8 @@ public class Tile {
         return name;
     }
 
-    public String getType() {
-        return type;
+    public String getTileType() {
+        return this.getClass().getSimpleName();
     }
+
 }
