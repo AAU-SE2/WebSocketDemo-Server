@@ -99,7 +99,7 @@ public class GameHandler {
         payload.put("tilePos", tile.getPosition());
         payload.put("tileName", tile.getName());
 
-        switch (tile.getTileType().toString().toLowerCase()) {
+        switch (tile.getTileType()) {
             case "street":
             case "station":
                 String owner = ownership.get(tile.getPosition());
