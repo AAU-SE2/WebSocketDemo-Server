@@ -10,6 +10,8 @@ public class GameHandler {
     private final GameBoard board = new GameBoard();
     private final List<GameMessage> extraMessages = new ArrayList<>();
     private final Map<Integer, String> ownership = new HashMap<>(); // Besitzverwaltung
+    private final EventCardService eventCardService = new EventCardService();
+
 
     public List<GameMessage> getExtraMessages() {
         return extraMessages;
@@ -113,7 +115,9 @@ public class GameHandler {
                 return new GameMessage("pay_tax", payload.toString());
 
             case "event":
-                return new GameMessage("draw_event_card", payload.toString());
+                String card = eventCardService.drawCard();
+                return new GameMessage("event_card", card);
+
 
             case "goto_jail":
                 return new GameMessage("go_to_jail", payload.toString());
