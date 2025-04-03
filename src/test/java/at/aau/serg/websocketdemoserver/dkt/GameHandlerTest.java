@@ -113,7 +113,7 @@ public class GameHandlerTest {
         Event tile = new Event(2, "Ereignisfeld");
 
         GameMessage msg = handler.decideAction("player1", tile);
-        assertEquals("draw_event_card", msg.getType());
+        assertEquals("event_card", msg.getType());
     }
 
     @Test
