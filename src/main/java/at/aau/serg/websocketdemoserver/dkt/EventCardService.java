@@ -1,4 +1,4 @@
-package at.aau.serg.websocketdemoserver.dkt.tiles;
+package at.aau.serg.websocketdemoserver.dkt;
 
 import java.util.List;
 import java.util.Random;
