@@ -1,5 +1,6 @@
 package at.aau.serg.websocketdemoserver.dkt;
 
+import at.aau.serg.websocketdemoserver.dkt.tiles.*;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,7 +44,7 @@ public class GameHandlerTest {
         GameMessage result = handler.handle(new GameMessage("roll_dice", payload));
 
         JSONObject obj = new JSONObject(result.getPayload());
-        String type = obj.getString("tileType");
+        String type = obj.getString("tileType").toLowerCase();
 
         // Anpassen der erlaubten Typen
         assertTrue(
@@ -76,10 +77,22 @@ public class GameHandlerTest {
         assertTrue(pos >= 0 && pos < 40);
     }
 
+
+    @Test
+    void testCreateStreetTile() {
+        Street tile = new Street(5, "Opernring", 220, 55, 110);
+        assertEquals("Opernring", tile.getName());
+        assertEquals(5, tile.getPosition());
+        assertEquals("street", tile.getTileType());
+        assertEquals(220, tile.getPrice());
+        assertEquals(55, tile.getRent());
+        assertEquals(110, tile.getHouseCost());
+    }
+
     @Test
     void testDecideActionForStreet() {
         GameHandler handler = new GameHandler();
-        Tile tile = new Tile(1, "Museumsplatz", "street");
+        Street tile = new Street(5, "Opernring", 220, 55, 110);
 
         GameMessage msg = handler.decideAction("player1", tile);
         assertEquals("can_buy_property", msg.getType());
@@ -88,7 +101,7 @@ public class GameHandlerTest {
     @Test
     void testDecideActionForTax() {
         GameHandler handler = new GameHandler();
-        Tile tile = new Tile(4, "Einkommenssteuer", "tax");
+        Tax tile = new Tax(4, "Einkommenssteuer", 100);
 
         GameMessage msg = handler.decideAction("player1", tile);
         assertEquals("pay_tax", msg.getType());
@@ -97,16 +110,16 @@ public class GameHandlerTest {
     @Test
     void testDecideActionForEvent() {
         GameHandler handler = new GameHandler();
-        Tile tile = new Tile(2, "Ereignisfeld", "event");
+        Event tile = new Event(2, "Ereignisfeld");
 
         GameMessage msg = handler.decideAction("player1", tile);
-        assertEquals("draw_event_card", msg.getType());
+        assertEquals("event_card", msg.getType());
     }
 
     @Test
     void testDecideActionForFreeField() {
         GameHandler handler = new GameHandler();
-        Tile tile = new Tile(20, "Frei Parken", "free");
+        Free tile = new Free(20, "Frei Parken");
 
         GameMessage msg = handler.decideAction("player1", tile);
         assertEquals("skipped", msg.getType());
