@@ -21,20 +21,6 @@ public class GameHandler {
     public GameState getGameState() {
         return gameState;
     }
-
-    private final List<EventCardRisiko> eventCardsRisiko = List.of(
-            new EventCardRisiko("Gehe 3 Felder zurück", -3),
-            new EventCardRisiko("Gehe 2 Felder vor", 2),
-            new EventCardRisiko("Gehe 4 Felder zurück", -4),
-            new EventCardRisiko("Gehe 4 Felder vor", 4)
-    );
-
-    private final List<EventCardBank> eventCardsBank = List.of(
-            new EventCardBank("Für Unfallversicherung bezahlst du 200,-", -200),
-            new EventCardBank("Für eine Autoreparatur bezahlst du 140,-", -140),
-            new EventCardBank("Für die Auswertung einer Erfindung erhälst du 140,- aus öffentlichen Mitteln", 140),
-            new EventCardBank("Die Bank zahlt dir an Dividenden 60,-", 60)
-    );
     public String getOwner(int tilePos) {
         return ownership.get(tilePos);
     }
@@ -67,9 +53,9 @@ public class GameHandler {
             movePayload.put("pos", newPos);
             movePayload.put("dice", dice);
             movePayload.put("tileName", tile.getName());
-            movePayload.put("tileType", tile.getType());
+            movePayload.put("tileType", tile.getTileType());
 
-            System.out.println("Server: " + playerId + " ist auf " + tile.getName() + " (" + tile.getType() + ")");
+            System.out.println("Server: " + playerId + " ist auf " + tile.getName() + " (" + tile.getTileType() + ")");
 
             // Aktion ermitteln
             GameMessage actionMsg = decideAction(playerId, tile);
@@ -115,7 +101,7 @@ public class GameHandler {
         payload.put("tilePos", tile.getPosition());
         payload.put("tileName", tile.getName());
 
-        switch (tile.getType()) {
+        switch (tile.getTileType()) {
             case "street":
             case "station":
                 String owner = ownership.get(tile.getPosition());
@@ -129,14 +115,16 @@ public class GameHandler {
                 return new GameMessage("pay_tax", payload.toString());
 
             case "event_risiko":
-                EventCardRisiko risikoCard = eventCardsRisiko.get(new Random().nextInt(eventCardsRisiko.size()));
+                EventCardService eventCardService = new EventCardService();
+                EventCardRisiko risikoCard = eventCardService.drawRisikoCard();
                 payload.put("eventTitle", risikoCard.getTitle());
                 payload.put("eventDescription", risikoCard.getDescription());
                 payload.put("eventAmount", risikoCard.getAmount());
                 return new GameMessage("draw_event_risiko_card", payload.toString());
 
             case "event_bank":
-                EventCardBank bankCard = eventCardsBank.get(new Random().nextInt(eventCardsBank.size()));
+                EventCardService eventCardService1 = new EventCardService();
+                EventCardBank bankCard = eventCardService1.drawBankCard();
                 payload.put("eventTitle", bankCard.getTitle());
                 payload.put("eventDescription", bankCard.getDescription());
                 payload.put("eventAmount", bankCard.getAmount());
