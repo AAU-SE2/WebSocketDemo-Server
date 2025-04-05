@@ -1,7 +1,7 @@
 package at.aau.serg.websocketdemoserver.dkt;
 
-import at.aau.serg.websocketdemoserver.messaging.dtos.EventCardBank;
-import at.aau.serg.websocketdemoserver.messaging.dtos.EventCardRisiko;
+import at.aau.serg.websocketdemoserver.dkt.tiles.EventCardBank;
+import at.aau.serg.websocketdemoserver.dkt.tiles.EventCardRisiko;
 
 import java.util.List;
 import java.util.Random;

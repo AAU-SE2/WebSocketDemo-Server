@@ -1,4 +1,4 @@
-package at.aau.serg.websocketdemoserver.messaging.dtos;
+package at.aau.serg.websocketdemoserver.dkt.tiles;
 
 import lombok.Getter;
 
@@ -20,16 +20,8 @@ public abstract class EventCard {
         this.amount = amount;
     }
 
-    public void setDescription(String description){
-        this.description = description;
-    }
-
     public void setTitle(String title){
         this.title = title;
-    }
-
-    public void setAmount(int amount){
-        this.amount = amount;
     }
 
 }
