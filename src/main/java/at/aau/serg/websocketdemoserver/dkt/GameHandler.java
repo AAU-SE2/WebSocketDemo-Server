@@ -120,6 +120,7 @@ public class GameHandler {
                 payload.put("eventTitle", risikoCard.getTitle());
                 payload.put("eventDescription", risikoCard.getDescription());
                 payload.put("eventAmount", risikoCard.getAmount());
+                payload.put("eventType", "risiko");
                 return new GameMessage("draw_event_risiko_card", payload.toString());
 
             case "event_bank":
@@ -128,6 +129,7 @@ public class GameHandler {
                 payload.put("eventTitle", bankCard.getTitle());
                 payload.put("eventDescription", bankCard.getDescription());
                 payload.put("eventAmount", bankCard.getAmount());
+                payload.put("eventType", "bank");
                 return new GameMessage("draw_event_bank_card", payload.toString());
 
             case "goto_jail":
