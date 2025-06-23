@@ -2,10 +2,11 @@ package at.aau.serg.websocketdemoserver.controller;
 
 import at.aau.serg.websocketdemoserver.dto.GameMessage;
 import at.aau.serg.websocketdemoserver.service.GameManager;
-import at.aau.serg.websocketdemoserver.service.LobbyService;
+import at.aau.serg.websocketdemoserver.websocket.SessionUserRegistry;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
@@ -23,8 +24,7 @@ public class GameWebSocketController {
 
     private final SimpMessagingTemplate messagingTemplate;
 
-    public GameWebSocketController(SimpMessagingTemplate messagingTemplate,
-                                   LobbyService lobbyService) {
+    public GameWebSocketController(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
     }
 
@@ -33,17 +33,27 @@ public class GameWebSocketController {
      */
     @MessageMapping("/dkt/{lobbyId}")
     public void handleGameMessage(@DestinationVariable int lobbyId,
-                                  @Payload GameMessage message) {
+                                  @Payload GameMessage message,
+                                  @Header("simpSessionId") String sessionId) {
+        // Try to extract userId from payload if it's a RollDiceRequest
+        String userId = null;
+        if (message != null && message.getPayload() instanceof java.util.Map) {
+            Object playerIdObj = ((java.util.Map<?, ?>) message.getPayload()).get("playerId");
+            if (playerIdObj != null) {
+                userId = String.valueOf(playerIdObj);
+                SessionUserRegistry.register(sessionId, userId, lobbyId);
+            }
+        }
+
         if (lobbyId < 0) {
-            System.err.println("Ungültige Lobby-ID: " + lobbyId);
+            logger.info("Ungültige Lobby-ID: " + lobbyId);
             return;
         }
-        logger.info("Game {}: {}", lobbyId, message.getType());
+        logger.info("Game {}: {} (session {} user {})", lobbyId, message.getType(), sessionId, userId);
         message.setLobbyId(lobbyId);
-
         var handler = GameManager.getInstance().getHandler(lobbyId);
         if (handler == null) {
-            System.err.println("Kein GameHandler für ID: " + lobbyId);
+            logger.info("Kein GameHandler für ID: " + lobbyId);
             return;
         }
         GameMessage result = handler.handle(message);
@@ -55,5 +65,4 @@ public class GameWebSocketController {
                 messagingTemplate.convertAndSend("/topic/dkt/" + lobbyId, extra)
         );
     }
-
 }

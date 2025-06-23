@@ -39,8 +39,10 @@ class UserManagerTest {
         assertEquals("Alice", players.get(0).getNickname());
         assertEquals("Bob", players.get(1).getNickname());
 
-        // Liste darf nicht modifizierbar sein
-        assertThrows(UnsupportedOperationException.class, () -> players.add(new PlayerDTO(3, "Charlie")));
+        PlayerDTO dto = new PlayerDTO(3, "Charlie");
+        assertThrows(UnsupportedOperationException.class, () ->
+                players.add(dto)
+        );
     }
 
     @Test

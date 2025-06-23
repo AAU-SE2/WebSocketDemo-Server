@@ -13,6 +13,8 @@ import at.aau.serg.websocketdemoserver.model.util.DicePair;
 import at.aau.serg.websocketdemoserver.service.GameRequest;
 import at.aau.serg.websocketdemoserver.service.MessageFactory;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,7 @@ public class RollPrisonRequest implements GameRequest {
     public RollPrisonRequest(DicePair dicePair) {
         this.dicePair = dicePair;
     }
+    private static final Logger logger = LoggerFactory.getLogger(RollPrisonRequest.class);
 
     @Override
     public GameMessage execute(int lobbyId, Object payload, GameState gameState, List<GameMessage> extraMessages) {
@@ -43,7 +46,7 @@ public class RollPrisonRequest implements GameRequest {
             int roll1 = rolls[0];
             int roll2 = rolls[1];
 
-            System.out.println("Prison roll: " + player.getNickname() + " rolled " + roll1 + " and " + roll2);
+            logger.info("Prison roll: " + player.getNickname() + " rolled " + roll1 + " and " + roll2);
 
             if (roll1 == roll2) {
                 player.setSuspensionRounds(0);

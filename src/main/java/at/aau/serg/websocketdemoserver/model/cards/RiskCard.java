@@ -5,7 +5,7 @@ public abstract class RiskCard {
     private final String title;
     private final String description;
 
-    public RiskCard(int id, String title, String description) {
+    protected RiskCard(int id, String title, String description) {
         this.id = id;
         this.title = title;
         this.description = description;

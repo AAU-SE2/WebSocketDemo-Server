@@ -2,12 +2,10 @@ package at.aau.serg.websocketdemoserver.service.lobby_request;
 
 import at.aau.serg.websocketdemoserver.dto.LobbyMessage;
 import at.aau.serg.websocketdemoserver.dto.LobbyMessageType;
-import at.aau.serg.websocketdemoserver.service.Lobby;
 import at.aau.serg.websocketdemoserver.service.LobbyManager;
 import at.aau.serg.websocketdemoserver.service.LobbyRequest;
 import at.aau.serg.websocketdemoserver.service.helper.LobbyHelper;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

@@ -6,7 +6,7 @@ import java.util.List;
 
 public class RiskCardDeck {
 
-    private static RiskCardDeck instance;
+    private static final RiskCardDeck instance = new RiskCardDeck();
     private final List<RiskCard> cards;
 
     private RiskCardDeck() {
@@ -20,9 +20,6 @@ public class RiskCardDeck {
     }
 
     public static RiskCardDeck get() {
-        if (instance == null) {
-            instance = new RiskCardDeck();
-        }
         return instance;
     }
 

@@ -26,7 +26,6 @@ public class BuyPropertyRequest implements GameRequest {
             Player player = gameState.getPlayer(playerId);
 
             if (tilePos == -1) {
-                System.out.println("Didnt want to buy a property.");
                 gameState.advanceTurn();
                 player.setHasRolledDice(false);
                 return MessageFactory.gameState(lobbyId, gameState);

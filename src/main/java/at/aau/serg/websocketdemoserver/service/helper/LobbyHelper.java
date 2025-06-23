@@ -9,6 +9,9 @@ import java.util.Map;
 
 public class LobbyHelper {
 
+    private LobbyHelper() {
+    }
+
     public static List<Map<String, Object>> getLobbyList(LobbyManager lobbyManager) {
         return lobbyManager.getLobbyIds().stream()
                 .map(id -> {

@@ -1,7 +1,6 @@
 package at.aau.serg.websocketdemoserver.model.gamestate;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
@@ -101,7 +100,6 @@ public class GameState {
             // If they’re alive but suspended, decrease suspension and end here (their turn is skipped).
             if (current.getSuspensionRounds() > 0) {
                 current.decreaseSuspension();
-                return;
             }
 
             // Alive and no suspension ⇒ this is the next player to act.

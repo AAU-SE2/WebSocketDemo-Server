@@ -9,6 +9,7 @@ import at.aau.serg.websocketdemoserver.service.GameRequest;
 import at.aau.serg.websocketdemoserver.service.MessageFactory;
 import org.json.JSONObject;
 
+
 import java.util.List;
 import java.util.Map;
 
@@ -54,7 +55,7 @@ public class BuildHouseRequest implements GameRequest {
 
             boolean success = street.buildHouse(player);
             if (!success) {
-                return MessageFactory.error(lobbyId, "Hausbau nicht möglich (z. B. max. Häuserzahl oder zu wenig Geld).");
+                return MessageFactory.error(lobbyId, "Hausbau nicht möglich.");
             }
 
             // Feld als „in dieser Runde bebaut“ markieren

@@ -19,7 +19,6 @@ class DrawRiskCardRequestTest {
 
     private GameState gameState;
     private Player player;
-    private JailTile jailTile;
     private List<GameMessage> extraMessages;
     private Map<String, Object> payload;
 
@@ -32,7 +31,6 @@ class DrawRiskCardRequestTest {
         player.setCash(500);
         gameState.startGame(List.of(player));
 
-        jailTile = new JailTile(10);
         extraMessages = new ArrayList<>();
         payload = new HashMap<>();
         payload.put("playerId", player.getId());

@@ -20,7 +20,6 @@ public class LobbyService {
     @Getter
     private final LobbyManager lobbyManager = new LobbyManager();
     private final UserManager userManager = new UserManager();
-    private final ObjectMapper objectMapper = new ObjectMapper();
     private final Map<LobbyMessageType, LobbyRequest> requestHandlers = new HashMap<>();
 
     public LobbyService(SimpMessagingTemplate messagingTemplate) {

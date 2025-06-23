@@ -41,9 +41,6 @@ public class Player implements Comparable<Player> {
         this.cash = 3000;
         this.alive = true;
         this.board = board;
-        if (id >= idCounter) {
-            idCounter = id + 1;
-        }
     }
 
     public void setCash(int newCash) {
@@ -152,8 +149,6 @@ public class Player implements Comparable<Player> {
             int newIndex     = wrapped + 1;
 
             moveToTile(newIndex);
-
-            System.out.println("Now on tile: " + newIndex);
         }
     }
 

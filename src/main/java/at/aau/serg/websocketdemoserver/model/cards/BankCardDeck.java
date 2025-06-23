@@ -6,7 +6,7 @@ import java.util.List;
 
 public class BankCardDeck {
 
-    private static BankCardDeck instance;
+    private static final BankCardDeck instance = new BankCardDeck();
     private final List<BankCard> cards;
 
     private BankCardDeck() {
@@ -20,9 +20,6 @@ public class BankCardDeck {
     }
 
     public static BankCardDeck get() {
-        if (instance == null) {
-            instance = new BankCardDeck();
-        }
         return instance;
     }
 

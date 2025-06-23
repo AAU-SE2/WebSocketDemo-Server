@@ -1,8 +1,11 @@
 package at.aau.serg.websocketdemoserver.model.board;
 
+import lombok.Setter;
+
 public abstract class Tile {
 
     private final int index;
+    @Setter
     private String label = "";
 
     protected Tile(int index) {
@@ -15,10 +18,6 @@ public abstract class Tile {
 
     public String getLabel() {
         return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
     }
 
     public abstract TileType getType();

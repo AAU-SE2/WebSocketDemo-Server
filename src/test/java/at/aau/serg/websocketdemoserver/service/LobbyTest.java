@@ -39,7 +39,10 @@ class LobbyTest {
         lobby.addPlayer(player);
         List<PlayerDTO> players = lobby.getPlayers();
 
-        assertThrows(UnsupportedOperationException.class, () -> players.add(new PlayerDTO(3, "Eve")));
+        PlayerDTO newPlayer = new PlayerDTO(3, "Eve");
+        assertThrows(UnsupportedOperationException.class, () ->
+                players.add(newPlayer)
+        );
     }
 
     @Test

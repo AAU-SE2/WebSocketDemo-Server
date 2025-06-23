@@ -22,7 +22,6 @@ public class StreetTile extends Tile {
     private final int hotelCost;
 
     private final List<BuildingType> buildings = new ArrayList<>();
-    @Setter
     @Getter
     private Player owner;
 
@@ -38,6 +37,15 @@ public class StreetTile extends Tile {
         this.level = level;
         this.houseCost = houseCost;
         this.hotelCost = hotelCost;
+    }
+
+    public void setOwner(Player player) {
+        if (player == null) {
+            this.owner = null;
+            clearBuildings();
+        } else {
+            this.owner = player;
+        }
     }
 
     // --------------------------------------------

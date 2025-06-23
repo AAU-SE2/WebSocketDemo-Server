@@ -42,7 +42,6 @@ public class GameHandler {
         requestMap.put(PAY_RENT, new PayRentRequest());
         requestMap.put(BUILD_HOUSE, new BuildHouseRequest());
         requestMap.put(BUILD_HOTEL, new BuildHotelRequest());
-//        requestMap.put(PASS_START, new PassedStartRequest());
     }
 
     public GameMessage handle(GameMessage message) {
@@ -77,6 +76,13 @@ public class GameHandler {
                 .toList();
 
         gameState.startGame(playerModels);
+    }
+
+    public void removePlayer(int userId) {
+        Player player = gameState.getPlayer(userId);
+        if (player != null) {
+            player.setAlive(false);
+        }
     }
 
     public List<GameMessage> getExtraMessages() {

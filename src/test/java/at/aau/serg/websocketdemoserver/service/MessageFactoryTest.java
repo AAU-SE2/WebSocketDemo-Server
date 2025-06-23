@@ -60,9 +60,9 @@ class MessageFactoryTest {
 
     @Test
     void testGameOver() {
-        Player player = new Player(1, "Alice", new GameBoard());
+        Player testPlayer = new Player(1, "Tester", new GameBoard());
 
-        GameMessage msg = MessageFactory.gameOver(7, player);
+        GameMessage msg = MessageFactory.gameOver(7, testPlayer);
 
         assertEquals(7, msg.getLobbyId());
         assertEquals(MessageType.GAME_OVER, msg.getType());

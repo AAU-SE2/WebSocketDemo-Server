@@ -12,6 +12,6 @@ class TileFactoryTest {
         List<Tile> tiles = TileFactory.createTiles();
         assertFalse(tiles.isEmpty());
         assertTrue(tiles.stream().anyMatch(t -> t.getIndex() == 1 && t.getType() == TileType.START));
-        assertTrue(tiles.stream().anyMatch(t -> t instanceof StreetTile));
+        assertTrue(tiles.stream().anyMatch(StreetTile.class::isInstance));
     }
 }

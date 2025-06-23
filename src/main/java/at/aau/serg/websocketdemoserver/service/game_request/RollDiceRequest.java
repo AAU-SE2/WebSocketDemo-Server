@@ -14,11 +14,15 @@ import at.aau.serg.websocketdemoserver.service.GameRequest;
 import at.aau.serg.websocketdemoserver.service.MessageFactory;
 import at.aau.serg.websocketdemoserver.model.cards.BankCardDeck;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.util.List;
 import java.util.Map;
 
 public class RollDiceRequest implements GameRequest {
+    private static final Logger logger = LoggerFactory.getLogger(RollDiceRequest.class);
 
     private final DicePair dicePair;
 
@@ -39,22 +43,22 @@ public class RollDiceRequest implements GameRequest {
             }
 
             if (playerId != gameState.getCurrentPlayerId()) {
-                System.out.println("Player " + player.getNickname() + " tried to roll the dice, but it's not their turn.");
+                logger.info("Player " + player.getNickname() + " tried to roll the dice, but it's not their turn.");
                 return MessageFactory.error(lobbyId, "Nicht dein Zug.");
             }
 
             // check how many players are alive
             if (gameState.getAlivePlayers().size() <= 1) {
-                System.out.println("Game over, only one player left.");
+                logger.info("Game over, only one player left.");
                 return MessageFactory.gameOver(lobbyId, gameState.getCurrentPlayer());
             }
 
 
             // check if already rolled dice
             if (player.isHasRolledDice()) {
-                System.out.println("Player " + player.getNickname() + " has already rolled the dice.");
+                logger.info("Player " + player.getNickname() + " has already rolled the dice.");
                 // check current player
-                System.out.println("Current player: " + gameState.getCurrentPlayer().getNickname());
+                logger.info("Current player: " + gameState.getCurrentPlayer().getNickname());
                 return MessageFactory.error(lobbyId, "Du hast bereits geworfen.");
             }
             // Merken, dass Spieler gerade gewürfelt hat
@@ -64,13 +68,24 @@ public class RollDiceRequest implements GameRequest {
                 return MessageFactory.error(lobbyId, "Spieler ungültig oder ausgeschieden.");
             }
 
-            // get current tile
             Tile currentTile = player.getCurrentTile();
-            // print name of street if street
-            System.out.println("Player " + player.getNickname() + " is on tile: " + currentTile.getIndex() + " " + currentTile.getType() + " " + (currentTile instanceof StreetTile ? ((StreetTile) currentTile).getLabel() : ""));
+
+            if (currentTile instanceof StreetTile streetTile) {
+                logger.info("Player {} is on tile: {} {} {}",
+                        player.getNickname(),
+                        currentTile.getIndex(),
+                        currentTile.getType(),
+                        streetTile.getLabel());
+            } else {
+                logger.info("Player {} is on tile: {} {}",
+                        player.getNickname(),
+                        currentTile.getIndex(),
+                        currentTile.getType());
+            }
+
 
             if (player.isSuspended()) {
-                System.out.println("Player " + player.getNickname() + " is suspended for " + player.getSuspensionRounds() + " rounds.");
+                logger.info("Player " + player.getNickname() + " is suspended for " + player.getSuspensionRounds() + " rounds.");
                 // ask for payment
                 extraMessages.add(new GameMessage(
                         lobbyId,
@@ -91,7 +106,7 @@ public class RollDiceRequest implements GameRequest {
             int steps1 = rolls[0];
             int steps2 = rolls[1];
             int totalSteps = steps1 + steps2;
-            System.out.println("Player " + player.getNickname() + " rolled a " + totalSteps);
+            logger.info("Player " + player.getNickname() + " rolled a " + totalSteps);
             player.moveSteps(totalSteps);
 
             // check what the player has landed on
@@ -100,13 +115,13 @@ public class RollDiceRequest implements GameRequest {
 
             // check if passed or landed on START (field 1)
             if (prevIndex > newIndex || newIndex == 1) {
-                System.out.println("Player " + player.getNickname() + " passed or landed on START.");
+                logger.info("Player " + player.getNickname() + " passed or landed on START.");
                 GameRequest passedStart = new PassedStartRequest();
                 GameMessage result = passedStart.execute(lobbyId, payload, gameState, extraMessages);
 
                 // if player landed exactly on START, turn already ended there
                 if (newIndex == 1) {
-                    System.out.println("Player " + player.getNickname() + " landed directly on START.");
+                    logger.info("Player " + player.getNickname() + " landed directly on START.");
                     extraMessages.add(new GameMessage(
                             lobbyId,
                             MessageType.DICE_ROLLED,
@@ -123,26 +138,26 @@ public class RollDiceRequest implements GameRequest {
 
             switch (newTile.getType()) {
                 case STREET:
-                    System.out.println("Player " + player.getNickname() + " landed on a street.");
+                    logger.info("Player " + player.getNickname() + " landed on a street.");
 
                     // cast to StreetTile
                     StreetTile streetTile = (StreetTile) newTile;
 
                     // check if the street is owned
                     if (streetTile.getOwner() != null) {
-                        System.out.println("Player " + player.getNickname() + " landed on a street owned by " + streetTile.getOwner().getNickname());
+                        logger.info("Player " + player.getNickname() + " landed on a street owned by " + streetTile.getOwner().getNickname());
 
                         // transfer rent
                         Player owner = streetTile.getOwner();
                         int rent = streetTile.calculateRent();
                         player.transferCash(owner, rent);
-                        System.out.println("Player " + player.getNickname() + " paid rent of " + rent + " to " + owner.getNickname());
+                        logger.info("Player " + player.getNickname() + " paid rent of " + rent + " to " + owner.getNickname());
                         gameState.advanceTurn();
                     } else {
 
                         // check if the player can buy the street
                         if (player.getCash() < streetTile.getPrice()) {
-                            System.out.println("Player " + player.getNickname() + " cannot afford the street.");
+                            logger.info("Player " + player.getNickname() + " cannot afford the street.");
                             extraMessages.add(new GameMessage(
                                     lobbyId,
                                     MessageType.EXTRA_MESSAGE,
@@ -156,7 +171,7 @@ public class RollDiceRequest implements GameRequest {
                             break;
                         }
 
-                        System.out.println("Player " + player.getNickname() + " landed on an unowned street.");
+                        logger.info("Player " + player.getNickname() + " landed on an unowned street.");
                         extraMessages.add(new GameMessage(
                                 lobbyId,
                                 MessageType.ASK_BUY_PROPERTY,
@@ -195,21 +210,21 @@ public class RollDiceRequest implements GameRequest {
                     }
 
                     gameState.advanceTurn();
-                    System.out.println("Player " + player.getNickname() + " landed on GOTO_JAIL.");
+                    logger.info("Player " + player.getNickname() + " landed on GOTO_JAIL.");
                     break;
                 case BANK:
-                    System.out.println("Player " + player.getNickname() + " landed on a bank tile.");
+                    logger.info("Player " + player.getNickname() + " landed on a bank tile.");
                     DrawBankCardRequest drawBankCard = new DrawBankCardRequest(BankCardDeck.get());
                     return drawBankCard.execute(lobbyId, payload, gameState, extraMessages);
                 case RISK:
-                    System.out.println("Player " + player.getNickname() + " landed on a risk tile.");
+                    logger.info("Player " + player.getNickname() + " landed on a risk tile.");
                     DrawRiskCardRequest drawRiskCard = new DrawRiskCardRequest(RiskCardDeck.get());
                     return drawRiskCard.execute(lobbyId, payload, gameState, extraMessages);
                 case TAX:
-                    System.out.println("Player " + player.getNickname() + " landed on a tax tile.");
+                    logger.info("Player " + player.getNickname() + " landed on a tax tile.");
                     return new PayTaxRequest().execute(lobbyId, payload, gameState, extraMessages);
                 default:
-                    System.out.println("Player " + player.getNickname() + " landed on an unknown tile type: " + newTile.getType());
+                    logger.info("Player " + player.getNickname() + " landed on an unknown tile type: " + newTile.getType());
                     gameState.advanceTurn();
             }
 

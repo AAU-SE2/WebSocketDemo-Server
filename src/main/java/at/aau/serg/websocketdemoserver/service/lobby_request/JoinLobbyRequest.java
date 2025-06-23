@@ -35,8 +35,6 @@ public class JoinLobbyRequest implements LobbyRequest {
 
             PlayerDTO player = userManager.getPlayer(playerId);
 
-            System.out.println("Joining player: " + player);
-
             lobby.addPlayer(player);
 
             List<Map<String, Object>> lobbyList = LobbyHelper.getLobbyList(lobbyManager);
