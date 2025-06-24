@@ -161,6 +161,43 @@ class RollDiceRequestTest {
     }
 
     @Test
+    void testLandExactlyOnStartEndsTurn() {
+        mainPlayer.moveToTile(38); // Feld mit hohem Index
+        when(dicePair.roll()).thenReturn(new int[]{1, 2}); // z.B. über das Ende → START (index 1)
+
+        Map<String, Object> payload = Map.of("playerId", mainPlayer.getId());
+        List<GameMessage> extras = new ArrayList<>();
+        GameMessage result = request.execute(lobbyId, payload, gameState, extras);
+
+        assertEquals(MessageType.GAME_STATE, result.getType());
+        assertTrue(extras.stream().anyMatch(msg -> msg.getType() == MessageType.DICE_ROLLED));
+    }
+
+    @Test
+    void testLandOnRiskTileTriggersRiskCardDraw() {
+        SpecialTile risk = new SpecialTile(5, "Risk", TileType.RISK);
+        gameState.getBoard().getTiles().set(4, risk);
+        mainPlayer.moveToTile(1);
+        when(dicePair.roll()).thenReturn(new int[]{2, 2}); // → pos 5
+
+        Map<String, Object> payload = Map.of("playerId", mainPlayer.getId());
+        List<GameMessage> extras = new ArrayList<>();
+        GameMessage result = request.execute(lobbyId, payload, gameState, extras);
+
+        assertEquals(MessageType.GAME_STATE, result.getType());
+    }
+
+    @Test
+    void testDeadPlayerCannotRoll() {
+        mainPlayer.eliminate();
+        Map<String, Object> payload = Map.of("playerId", mainPlayer.getId());
+        List<GameMessage> extras = new ArrayList<>();
+        GameMessage result = request.execute(lobbyId, payload, gameState, extras);
+
+        assertEquals(MessageType.GAME_OVER, result.getType());
+    }
+
+    @Test
     void testRollDiceThrowsException() {
         when(dicePair.roll()).thenThrow(new RuntimeException("Test Error"));
         Map<String, Object> payload = Map.of("playerId", mainPlayer.getId());
