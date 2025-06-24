@@ -17,19 +17,6 @@ public class PlayerDTO {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof PlayerDTO)) return false;
-        PlayerDTO that = (PlayerDTO) o;
-        return id == that.id &&
-                Objects.equals(nickname, that.nickname);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, nickname);
-    }
-    @Override
     public String toString() {
         return "PlayerDTO{" +
                 "id=" + id +
